@@ -14,11 +14,11 @@ ENV SIGNTOOL_HOME="C:/signtool"
 ENV BUTLER_HOME="C:/butler"
 
 # Create required directories if they were not created
-RUN powershell New-Item -Path "${GODOT_HOME}" -ItemType Directory -Force
-RUN powershell New-Item -Path "${GODOT_TOOLS}" -ItemType Directory -Force
-RUN powershell New-Item -Path "${RCEDIT_HOME}" -ItemType Directory -Force
-RUN powershell New-Item -Path "${SIGNTOOL_HOME}" -ItemType Directory -Force
-RUN powershell New-Item -Path "${BUTLER_HOME}" -ItemType Directory -Force
+RUN powershell New-Item -Path ${GODOT_HOME} -ItemType Directory -Force
+RUN powershell New-Item -Path ${GODOT_TOOLS} -ItemType Directory -Force
+RUN powershell New-Item -Path ${RCEDIT_HOME} -ItemType Directory -Force
+RUN powershell New-Item -Path ${SIGNTOOL_HOME} -ItemType Directory -Force
+RUN powershell New-Item -Path ${BUTLER_HOME} -ItemType Directory -Force
 
 # Download Godot Engine
 RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_${GODOT_PLATFORM}.zip" -OutFile godot.zip
