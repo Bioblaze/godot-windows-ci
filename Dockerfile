@@ -13,6 +13,10 @@ ENV RCEDIT_HOME="C:/rcedit"
 ENV SIGNTOOL_HOME="C:/signtool"
 ENV BUTLER_HOME="C:/butler"
 
+# Print environment variables
+RUN echo GODOT_HOME="${GODOT_HOME}" GODOT_TOOLS="${GODOT_TOOLS}" RCEDIT_HOME="${RCEDIT_HOME}" SIGNTOOL_HOME="${SIGNTOOL_HOME}" BUTLER_HOME="${BUTLER_HOME}" ANDROID_HOME="${ANDROID_HOME}"
+
+
 # Create required directories if they were not created
 RUN powershell New-Item -Path ${GODOT_HOME} -ItemType Directory -Force
 RUN powershell New-Item -Path ${GODOT_TOOLS} -ItemType Directory -Force
