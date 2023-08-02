@@ -48,7 +48,7 @@ RUN powershell New-Item -Path "%GODOT_HOME%/editor_data/export_templates" -ItemT
 RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_export_templates.tpz" -OutFile export-templates.tpz
 
 # Extract export templates with 7-Zip
-RUN powershell Invoke-Expression -Command '"C:\Program Files\7-Zip\7z.exe" e .\export-templates.tpz -o"%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable"'
+RUN powershell Invoke-Expression -Command 'C:\"Program Files"\7-Zip\7z.exe e .\export-templates.tpz -o "%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable"'
 
 # Copy 'tools' directory to the image
 COPY tools/ %GODOT_TOOLS%/
@@ -63,7 +63,7 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
 # Copy signtool from Windows Kits to signtool directory
-RUN powershell Copy-Item "C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/signtool.exe" -Destination %SIGNTOOL_HOME%
+RUN powershell Invoke-Expression -Command 'Copy-Item C:\"Program Files (x86)"\"Windows Kits"\10\bin\10.0.22621.0\x64\signtool.exe -Destination %SIGNTOOL_HOME%'
 
 # Set signtool to path
 RUN setx /M PATH "%PATH%;%SIGNTOOL_HOME%"
