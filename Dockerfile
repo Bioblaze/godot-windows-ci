@@ -38,7 +38,7 @@ RUN powershell Expand-Archive -Path .\godot.zip -DestinationPath %GODOT_HOME% \
     && powershell New-Item -Path %GODOT_HOME% -Name ._sc_ -ItemType "file" -Force
 
 # Run Godot engine with arguments
-RUN %GODOT_HOME%\godot.exe -v -e --quit --headless
+RUN powershell %GODOT_HOME%\godot.exe -v -e --quit --headless
 
 # Create required directories if they were not created NOTE: If they weren't something is wrong....
 RUN powershell New-Item -Path "%GODOT_HOME%/editor_data" -ItemType Directory -Force
@@ -49,7 +49,7 @@ RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengi
 RUN powershell Expand-Archive -Path .\export-templates.tpz -DestinationPath "%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable"
 
 # Install ImageMagick via Chocolatey
-RUN choco install -y imagemagick
+RUN powershell choco install -y imagemagick
 
 # Copy 'tools' directory to the image
 COPY tools/ %GODOT_TOOLS%/
