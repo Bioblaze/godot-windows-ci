@@ -29,10 +29,10 @@ RUN powershell New-Item -Path %SIGNTOOL_HOME% -ItemType Directory -Force
 RUN powershell New-Item -Path %BUTLER_HOME% -ItemType Directory -Force
 
 # Print URL for Godot
-RUN echo https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.zip
+RUN echo https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.exe.zip
 
 # Download Godot Engine
-RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.zip" -OutFile godot.zip
+RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.exe.zip" -OutFile godot.zip
 RUN powershell Expand-Archive -Path .\godot.zip -DestinationPath %GODOT_HOME% \
     && powershell Rename-Item -Path "%GODOT_HOME%\Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.exe" -NewName "%GODOT_HOME%\godot.exe" \
     && powershell New-Item -Path %GODOT_HOME% -Name ._sc_ -ItemType "file" -Force
