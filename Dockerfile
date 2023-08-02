@@ -48,7 +48,7 @@ RUN powershell New-Item -Path "%GODOT_HOME%/editor_data/export_templates" -ItemT
 RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_export_templates.tpz" -OutFile export-templates.tpz
 
 # Extract export templates with 7-Zip
-RUN powershell Invoke-Expression -Command "'C:\Program Files\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable"
+RUN powershell -command "& {&'C:\Program Files\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable}"
 
 # Copy 'tools' directory to the image
 COPY tools/ %GODOT_TOOLS%/
@@ -63,7 +63,7 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
 # Copy signtool from Windows Kits to signtool directory
-RUN powershell Invoke-Expression -Command "Copy-Item 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe' -Destination %SIGNTOOL_HOME%"
+RUN powershell -command "& {&'Copy-Item' 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe' -Destination %SIGNTOOL_HOME%}"
 
 # Set signtool to path
 RUN setx /M PATH "%PATH%;%SIGNTOOL_HOME%"
@@ -95,7 +95,7 @@ RUN echo 'export/android/shutdown_adb_on_exit = true' >> %GODOT_HOME%/editor_dat
 RUN echo 'export/android/timestamping_authority_url = ""' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 RUN echo 'export/android/debug_keystore_pass = "android"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 RUN echo 'export/android/debug_keystore_user = "androiddebugkey"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'xport/android/debug_keystore = "%GODOT_HOME%\debug.keystore"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+RUN echo 'export/android/debug_keystore = "%GODOT_HOME%\debug.keystore"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 
 # Remove downloaded files
 RUN powershell Remove-Item -Path %BUTLER_HOME%/butler.zip
