@@ -46,8 +46,9 @@ RUN powershell New-Item -Path "%GODOT_HOME%/editor_data/export_templates" -ItemT
 
 # Download and install export templates
 RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_export_templates.tpz" -OutFile export-templates.tpz
+
 # Extract export templates with 7-Zip
-RUN powershell "C:\Program Files\7-Zip\7z.exe" e .\export-templates.tpz -o"%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable"
+RUN powershell Invoke-Expression -Command '"C:\Program Files\7-Zip\7z.exe" e .\export-templates.tpz -o"%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable"'
 
 # Copy 'tools' directory to the image
 COPY tools/ %GODOT_TOOLS%/
