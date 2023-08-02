@@ -1,12 +1,16 @@
 # Use Microsoft's Windows Server Core image as the base
 FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
+# Define arguments
+ARG GODOT_VERSION="4.1.1"
+ARG RELEASE_NAME="stable"
+ARG GODOT_PLATFORM="win64"
+
 # Set environment variable for Godot
-ENV GODOT_VERSION="4.1.1"
-ENV RELEASE_NAME="stable"
-ENV SUBDIR=""
+ENV GODOT_VERSION=%GODOT_VERSION%
+ENV RELEASE_NAME=%RELEASE_NAME%
+ENV GODOT_PLATFORM=%GODOT_PLATFORM%
 ENV GODOT_TEST_ARGS=""
-ENV GODOT_PLATFORM="win64"
 ENV GODOT_HOME="C:/godot"
 ENV GODOT_TOOLS="C:/godot_tools"
 ENV RCEDIT_HOME="C:/rcedit"
@@ -25,10 +29,10 @@ RUN powershell New-Item -Path %SIGNTOOL_HOME% -ItemType Directory -Force
 RUN powershell New-Item -Path %BUTLER_HOME% -ItemType Directory -Force
 
 # Print URL for Godot
-RUN echo https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%%SUBDIR%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.zip
+RUN echo https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.zip
 
 # Download Godot Engine
-RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%%SUBDIR%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.zip" -OutFile godot.zip
+RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.zip" -OutFile godot.zip
 RUN powershell Expand-Archive -Path .\godot.zip -DestinationPath %GODOT_HOME% \
     && powershell Rename-Item -Path "%GODOT_HOME%\Godot_v%GODOT_VERSION%-%RELEASE_NAME%_%GODOT_PLATFORM%.exe" -NewName "%GODOT_HOME%\godot.exe" \
     && powershell New-Item -Path %GODOT_HOME% -Name ._sc_ -ItemType "file" -Force
