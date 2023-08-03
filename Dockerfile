@@ -47,8 +47,9 @@ RUN powershell New-Item -Path "%GODOT_HOME%/editor_data/export_templates" -ItemT
 # Download and install export templates
 RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_export_templates.tpz" -OutFile export-templates.tpz
 
-# Install 7zip via choco
-RUN powershell choco install 7zip -y
+# Install Chocolatey and packages
+RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin" \
+    && choco install -y 7zip
 
 # Extract export templates with 7-Zip
 RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.%RELEASE_NAME%}"
@@ -65,12 +66,8 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 # Set rcedit to path
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
-# Check for SignTool install location in registry
-RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots' -Name 'InstallLocation' -EA SilentlyContinue; if($signtoolPath -ne $null){ Write-Output $signtoolPath.InstallLocation} else { Write-Output 'SignTool not found in registry'} }"
-
-
 # Copy signtool.exe from the InstallLocation in the registry
-RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots' -Name 'KitsRoot10' -EA SilentlyContinue; if($signtoolPath -ne $null){ Copy-Item -Path ('{0}\App Certification Kit\signtool.exe' -f $signtoolPath.KitsRoot10) -Destination $env:SIGNTOOL_HOME -Force -EA SilentlyContinue; Rename-Item -Path ('{0}\signtool.exe' -f $env:SIGNTOOL_HOME) -NewName 'signtool.exe' -Force -EA SilentlyContinue} else { Write-Output 'SignTool not found in registry'} }"
+RUN powershell -command "& {&'Copy-Item' '%PROGRAMFILES(X86)%\Windows Kits\10\bin\x64\signtool.exe' -Destination %SIGNTOOL_HOME%}"
 
 # Set signtool to path
 RUN setx /M PATH "%PATH%;%SIGNTOOL_HOME%"
