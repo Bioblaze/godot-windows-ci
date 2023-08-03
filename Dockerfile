@@ -63,7 +63,7 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
 # Copy signtool from Windows Kits to signtool directory
-RUN powershell -command "& {&'Copy-Item' 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe' -Destination %SIGNTOOL_HOME%}"
+RUN powershell -command "& {&'Copy-Item' 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\SignTool.exe' -Destination %SIGNTOOL_HOME%}"
 
 # Set signtool to path
 RUN setx /M PATH "%PATH%;%SIGNTOOL_HOME%"
@@ -82,7 +82,7 @@ RUN powershell -Command "& {%BUTLER_HOME%/butler.exe -V; %RCEDIT_HOME%/rcedit.ex
 RUN setx /M PATH "%PATH%;%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin"
 
 # Create an Android debug keystore
-RUN "%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin/keytool.exe" -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
+RUN powershell "%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin/keytool.exe" -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
 
 # Move debug.keystore to GODOT_HOME
 RUN powershell Move-Item -Path .\debug.keystore -Destination "%GODOT_HOME%\debug.keystore"
