@@ -47,8 +47,11 @@ RUN powershell New-Item -Path "%GODOT_HOME%/editor_data/export_templates" -ItemT
 # Download and install export templates
 RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_export_templates.tpz" -OutFile export-templates.tpz
 
+# Install 7zip via choco
+RUN powershell choco install 7zip -y
+
 # Extract export templates with 7-Zip
-RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable}"
+RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.%RELEASE_NAME%}"
 
 # Copy 'tools' directory to the image
 COPY tools/ %GODOT_TOOLS%/
@@ -63,11 +66,11 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
 # Check for SignTool install location in registry
-RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\ClickOnce\SignTool' -Name 'InstallLocation' -EA SilentlyContinue; if($signtoolPath -ne $null){ Write-Output $signtoolPath.InstallLocation} else { Write-Output 'SignTool not found in registry'} }"
+RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots' -Name 'InstallLocation' -EA SilentlyContinue; if($signtoolPath -ne $null){ Write-Output $signtoolPath.InstallLocation} else { Write-Output 'SignTool not found in registry'} }"
 
 
 # Copy signtool.exe from the InstallLocation in the registry
-RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots' -Name 'KitsRoot10' -EA SilentlyContinue; if($signtoolPath -ne $null){ Copy-Item -Path ('{0}\bin\10.0.22621.0\x64\SignTool.exe' -f $signtoolPath.KitsRoot10) -Destination $env:SIGNTOOL_HOME -Force -EA SilentlyContinue; Rename-Item -Path ('{0}\SignTool.exe' -f $env:SIGNTOOL_HOME) -NewName 'signtool.exe' -Force -EA SilentlyContinue} else { Write-Output 'SignTool not found in registry'} }"
+RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots' -Name 'KitsRoot10' -EA SilentlyContinue; if($signtoolPath -ne $null){ Copy-Item -Path ('{0}\App Certification Kit\signtool.exe' -f $signtoolPath.KitsRoot10) -Destination $env:SIGNTOOL_HOME -Force -EA SilentlyContinue; Rename-Item -Path ('{0}\signtool.exe' -f $env:SIGNTOOL_HOME) -NewName 'signtool.exe' -Force -EA SilentlyContinue} else { Write-Output 'SignTool not found in registry'} }"
 
 # Set signtool to path
 RUN setx /M PATH "%PATH%;%SIGNTOOL_HOME%"
