@@ -52,7 +52,7 @@ RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object Sy
     && choco install -y 7zip
 
 # Extract export templates with 7-Zip
-RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.%RELEASE_NAME%}"
+RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.%RELEASE_NAME%}"
 
 # Copy 'tools' directory to the image
 COPY tools/ %GODOT_TOOLS%/
@@ -67,7 +67,7 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
 # Download Windows SDK
-RUN powershell Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/p/?linkid=2083338&clcid=0x409" -OutFile C:/WindowsSDKSetup.exe
+RUN powershell Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/p/?linkid=2083338"&"clcid=0x409' -OutFile C:/WindowsSDKSetup.exe
 
 # Install Windows SDK
 RUN powershell Start-Process -FilePath C:/WindowsSDKSetup.exe -ArgumentList "/q", "/norestart", "/features", "+" -Wait
