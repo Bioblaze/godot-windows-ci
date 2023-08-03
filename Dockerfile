@@ -66,6 +66,19 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 # Set rcedit to path
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
+# Download Windows SDK
+RUN powershell Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/p/?linkid=2083338&clcid=0x409" -OutFile C:/WindowsSDKSetup.exe
+
+# Install Windows SDK
+RUN powershell Start-Process -FilePath C:/WindowsSDKSetup.exe -ArgumentList "/q", "/norestart", "/features", "+" -Wait
+
+# Remove the setup file
+RUN powershell Remove-Item -Path C:/WindowsSDKSetup.exe
+
+# Verify the installation
+RUN powershell if (!(Test-Path 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64')) {throw "Installation of Windows SDK failed"}
+
+
 # Copy signtool.exe from the InstallLocation in the registry
 RUN powershell -command "& {&'Copy-Item' '%PROGRAMFILES(X86)%\Windows Kits\10\bin\x64\signtool.exe' -Destination %SIGNTOOL_HOME%}"
 
