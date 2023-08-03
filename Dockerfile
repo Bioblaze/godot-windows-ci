@@ -48,7 +48,7 @@ RUN powershell New-Item -Path "%GODOT_HOME%/editor_data/export_templates" -ItemT
 RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengine/%GODOT_VERSION%/Godot_v%GODOT_VERSION%-%RELEASE_NAME%_export_templates.tpz" -OutFile export-templates.tpz
 
 # Extract export templates with 7-Zip
-RUN powershell -command "& {&'C:\Program Files\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable}"
+RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o %GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.stable}"
 
 # Copy 'tools' directory to the image
 COPY tools/ %GODOT_TOOLS%/
@@ -62,8 +62,12 @@ RUN powershell Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releas
 # Set rcedit to path
 RUN setx /M PATH "%PATH%;%RCEDIT_HOME%"
 
-# Copy signtool from Windows Kits to signtool directory
-RUN powershell -command "& {&'Copy-Item' 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\SignTool.exe' -Destination %SIGNTOOL_HOME%}"
+# Check for SignTool install location in registry
+RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\ClickOnce\SignTool' -Name 'InstallLocation' -EA SilentlyContinue; if($signtoolPath -ne $null){ Write-Output $signtoolPath.InstallLocation} else { Write-Output 'SignTool not found in registry'} }"
+
+
+# Copy signtool.exe from the InstallLocation in the registry
+RUN powershell -command "& {$signtoolPath = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows Kits\Installed Roots' -Name 'KitsRoot10' -EA SilentlyContinue; if($signtoolPath -ne $null){ Copy-Item -Path ('{0}\bin\10.0.22621.0\x64\SignTool.exe' -f $signtoolPath.KitsRoot10) -Destination $env:SIGNTOOL_HOME -Force -EA SilentlyContinue; Rename-Item -Path ('{0}\SignTool.exe' -f $env:SIGNTOOL_HOME) -NewName 'signtool.exe' -Force -EA SilentlyContinue} else { Write-Output 'SignTool not found in registry'} }"
 
 # Set signtool to path
 RUN setx /M PATH "%PATH%;%SIGNTOOL_HOME%"
@@ -78,24 +82,24 @@ RUN setx /M PATH "%PATH%;%BUTLER_HOME%"
 # Verify butler and rcedit installation
 RUN powershell -Command "& {%BUTLER_HOME%/butler.exe -V; %RCEDIT_HOME%/rcedit.exe -h;}"
 
-# Set butler to path
-RUN setx /M PATH "%PATH%;%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin"
+# Set Android to path
+# RUN setx /M PATH "%PATH%;%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin"
 
 # Create an Android debug keystore
-RUN powershell "%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin/keytool.exe" -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
+# RUN powershell "%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin/keytool.exe" -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
 
 # Move debug.keystore to GODOT_HOME
-RUN powershell Move-Item -Path .\debug.keystore -Destination "%GODOT_HOME%\debug.keystore"
+# RUN powershell Move-Item -Path .\debug.keystore -Destination "%GODOT_HOME%\debug.keystore"
 
 # Append editor settings
 RUN echo 'export/windows/rcedit = "%RCEDIT_HOME%"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 RUN echo 'export/windows/signtool = "%SIGNTOOL_HOME%"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'export/android/android_sdk_path = "${ANDROID_SDK_ROOT}"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'export/android/shutdown_adb_on_exit = true' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'export/android/timestamping_authority_url = ""' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'export/android/debug_keystore_pass = "android"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'export/android/debug_keystore_user = "androiddebugkey"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'export/android/debug_keystore = "%GODOT_HOME%\debug.keystore"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+# RUN echo 'export/android/android_sdk_path = "${ANDROID_SDK_ROOT}"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+# RUN echo 'export/android/shutdown_adb_on_exit = true' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+# RUN echo 'export/android/timestamping_authority_url = ""' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+# RUN echo 'export/android/debug_keystore_pass = "android"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+# RUN echo 'export/android/debug_keystore_user = "androiddebugkey"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+# RUN echo 'export/android/debug_keystore = "%GODOT_HOME%\debug.keystore"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 
 # Remove downloaded files
 RUN powershell Remove-Item -Path %BUTLER_HOME%/butler.zip
