@@ -105,8 +105,8 @@ RUN powershell -Command "& {%BUTLER_HOME%/butler.exe -V; %RCEDIT_HOME%/rcedit.ex
 # RUN powershell Move-Item -Path .\debug.keystore -Destination "%GODOT_HOME%\debug.keystore"
 
 # Append editor settings
-RUN echo 'export/windows/rcedit = "%RCEDIT_HOME%"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
-RUN echo 'export/windows/signtool = "%SIGNTOOL_HOME%"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+RUN echo 'export/windows/rcedit = "%RCEDIT_HOME%/rcedit.exe"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
+RUN echo 'export/windows/signtool = "%SIGNTOOL_HOME%/signtool.exe"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 # RUN echo 'export/android/android_sdk_path = "${ANDROID_SDK_ROOT}"' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 # RUN echo 'export/android/shutdown_adb_on_exit = true' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
 # RUN echo 'export/android/timestamping_authority_url = ""' >> %GODOT_HOME%/editor_data/editor_settings-4.tres
