@@ -76,11 +76,11 @@ RUN powershell Start-Process -FilePath C:/WindowsSDKSetup.exe -ArgumentList "/q"
 RUN powershell Remove-Item -Path C:/WindowsSDKSetup.exe
 
 # Verify the installation
-RUN powershell if (!(Test-Path 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64')) {throw "Installation of Windows SDK failed"}
+RUN powershell if (!(Test-Path 'C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64')) {throw "Installation of Windows SDK failed"}
 
 
 # Copy signtool.exe from the InstallLocation in the registry
-RUN powershell -command "& {&'Copy-Item' '%PROGRAMFILES(X86)%\Windows Kits\10\bin\x64\signtool.exe' -Destination %SIGNTOOL_HOME%}"
+RUN powershell -command "& {&'Copy-Item' '%PROGRAMFILES(X86)%\Windows Kits\10\bin\10.0.18362.0\x64\signtool.exe' -Destination %SIGNTOOL_HOME%}"
 
 # Set signtool to path
 RUN setx /M PATH "%PATH%;%SIGNTOOL_HOME%"
