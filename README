@@ -1,4 +1,3 @@
-
 # godot-windows-ci
 
 `godot-windows-ci` is a Dockerized Continuous Integration environment for Godot game development on Windows. This repository is managed by the user `bioblaze` and is automatically pushed to the Docker registry upon every push to the main branch.
