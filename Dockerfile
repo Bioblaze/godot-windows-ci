@@ -49,7 +49,7 @@ RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengi
 
 # Install Chocolatey and packages
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin" \
-    && choco install -y 7zip
+    && choco install -y 7zip imagemagick.app
 
 # Extract export templates with 7-Zip
 RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.%RELEASE_NAME%}"
