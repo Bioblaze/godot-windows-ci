@@ -49,7 +49,7 @@ RUN powershell Invoke-WebRequest -Uri "https://downloads.tuxfamily.org/godotengi
 
 # Install Chocolatey and packages
 RUN @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin" \
-    && choco install -y 7zip imagemagick.app
+    && choco install -y 7zip imagemagick.app innosetup
 
 # Extract export templates with 7-Zip
 RUN powershell -command "& {&'%ProgramFiles%\7-Zip\7z.exe' e .\export-templates.tpz -o%GODOT_HOME%\editor_data\export_templates\%GODOT_VERSION%.%RELEASE_NAME%}"
@@ -93,7 +93,7 @@ RUN powershell Expand-Archive -Path %BUTLER_HOME%/butler.zip -DestinationPath %B
 RUN setx /M PATH "%PATH%;%BUTLER_HOME%"
 
 # Verify butler and rcedit installation
-RUN powershell -Command "& {%BUTLER_HOME%/butler.exe -V; %RCEDIT_HOME%/rcedit.exe -h;}"
+RUN powershell -Command "& {%BUTLER_HOME%/butler.exe -V; %RCEDIT_HOME%/rcedit.exe -h; iscc /?}"
 
 # Set Android to path
 # RUN setx /M PATH "%PATH%;%ANDROID_HOME%/cmdline-tools/cmdline-tools/bin"
