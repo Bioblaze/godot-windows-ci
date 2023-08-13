@@ -1,0 +1,9 @@
+name: godot-windows-ci
+description: Docker Image to build, sign, and publish Windows Godot Engine Games.
+author: bioblaze
+branding:
+  color: gray-dark
+  icon: git-merge
+runs: 
+  using: 'docker'
+  image: 'docker://bioblaze/godot-windows-ci'
