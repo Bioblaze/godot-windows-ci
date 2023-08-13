@@ -44,13 +44,47 @@ To run Butler for itch.io, execute:
 %BUTLER_HOME%/butler.exe
 ```
 
-### Converting PNG to ICO with `create_ico.ps1`
+### Additional Tools
 
-To convert a PNG file to ICO using the included script, execute:
+## create_ico.ps1
+
+`create_ico.ps1` is a PowerShell script that converts a given PNG image into an ICO file with multiple sizes. It's useful for generating icons for your Windows applications.
+
+### Requirements
+
+- **ImageMagick**: This script requires ImageMagick to be installed on your system.
+
+### Usage
+
+You can run `create_ico.ps1` by providing the path to the PNG file and the export folder as follows:
 
 ```powershell
-%GODOT_TOOLS%/create_ico.ps1 -Path path/to/your_image.png
+create_ico.ps1 -icon_png path/to/your_image.png -export_folder path/to/export/folder
 ```
+
+### Parameters
+
+- **icon_png** (Mandatory): Path to the PNG file you want to convert to an ICO file.
+- **export_folder** (Mandatory): Path to the folder where you want to save the exported ICO file.
+
+### Example
+
+```powershell
+create_ico.ps1 -icon_png C:/images/my_icon.png -export_folder C:/exports
+```
+
+This command will convert `my_icon.png` into an ICO file and save it in the `C:/exports` folder with various sizes (256, 128, 64, 48, 32, 16).
+
+### Troubleshooting
+
+- If you encounter an error message stating that ImageMagick is not found, please make sure ImageMagick is properly installed.
+- If the specified PNG file or export folder doesn't exist, you'll receive a warning message.
+
+### Output
+
+Upon successful execution, the script will inform you that the icon has been successfully created and provide the path to the new ICO file.
+
+---
 
 ## Contributing
 
