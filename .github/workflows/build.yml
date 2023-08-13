@@ -8,32 +8,36 @@ on:
 
 jobs:
 
-  # test:
-
-  #   runs-on: windows-latest
-
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Build the Docker image
-  #       run: docker build . --file Dockerfile --tag godot-windows-ci-test:$(date +%s)
-
-  build:
-  #  needs: [test]
+  test:
 
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
-        name: Checkout Codebase
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: bioblaze/godot-windows-ci:latest,bioblaze/godot-windows-ci-test:$(date +%s)
+      - name: Build the Docker image
+        run: |
+          docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+          docker build . --file Dockerfile --tag bioblaze/godot-windows-ci:latest
+          docker tag bioblaze/godot-windows-ci:latest bioblaze/godot-windows-ci:$(date +%s)
+          docker image push --all-tags bioblaze/godot-windows-ci
+
+  # build:
+  #   needs: [test]
+
+  #   runs-on: windows-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       name: Checkout Codebase
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v2
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         push: true
+  #         tags: bioblaze/godot-windows-ci:latest,bioblaze/godot-windows-ci-test:$(date +%s)
